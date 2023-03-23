@@ -26,5 +26,12 @@
             "url": "https://github.com/adam-code-labx/Laravel-UPS-Api.git"
         }
     ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "XtendLunar\\Addons\\ShippingProviderUps\\ShippingProviderUpsProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev"
-},
+}
