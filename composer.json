@@ -10,6 +10,11 @@
         "ups"
     ],
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "XtendLunar\\Addons\\ShippingProviderUps\\": "src/"
+        }
+    },
     "authors": [
         {
             "name": "Adam Lee",
