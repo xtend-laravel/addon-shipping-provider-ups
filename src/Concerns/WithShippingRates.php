@@ -2,16 +2,22 @@
 
 namespace XtendLunar\Addons\ShippingProviderUps\Concerns;
 
+use Xtend\Extensions\Lunar\Core\Models\Address;
+use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetRate;
+use XtendLunar\Addons\ShippingProviderUps\Ups\UpsApiConnector;
+
 trait WithShippingRates
 {
-    public function getShippingRates(): array
+    public function getShippingRates(array $payload): array
     {
-        // @todo: Implement this method.
+        $connector = new UpsApiConnector();
 
-        return [
-            'rate1' => 'value1',
-            'rate2' => 'value2',
-            'rate3' => 'value3',
-        ];
+        $request = new GetRate('Shop');
+
+        $request->body()->merge($payload);
+
+        $response = $connector->send($request)->json();
+
+        return $response['RateResponse']['RatedShipment'];
     }
 }
