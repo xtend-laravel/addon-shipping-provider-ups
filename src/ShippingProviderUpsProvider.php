@@ -10,7 +10,7 @@ use Xtend\Extensions\Lunar\Core\Concerns\XtendLunarCartPipeline;
 use Xtend\Extensions\Lunar\Core\Models\Cart;
 use XtendLunar\Addons\ShippingProviderUps\Commands\UpsSetupShippingOptions;
 use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
-use XtendLunar\Addons\ShippingProviderUps\Ups\GetAccessTokenRequest;
+use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetAccessToken;
 
 class ShippingProviderUpsProvider extends XtendAddonProvider
 {
@@ -24,8 +24,8 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
         $this->loadRestifyFrom(__DIR__.'/Restify', __NAMESPACE__.'\\Restify\\');
         $this->mergeConfigFrom(__DIR__.'/../config/ups.php', 'ups');
 
-        $this->app->bind(GetAccessTokenRequest::class, function () {
-            return new GetAccessTokenRequest(
+        $this->app->bind(GetAccessToken::class, function () {
+            return new GetAccessToken(
                 clientId: config('ups.client_id'),
                 clientSecret: config('ups.client_secret'),
             );

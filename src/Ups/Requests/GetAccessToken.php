@@ -1,13 +1,13 @@
 <?php
 
-namespace XtendLunar\Addons\ShippingProviderUps\Ups;
+namespace XtendLunar\Addons\ShippingProviderUps\Ups\Requests;
 
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\SoloRequest;
 use Saloon\Traits\Body\HasFormBody;
 
-class GetAccessTokenRequest extends SoloRequest implements HasBody
+class GetAccessToken extends SoloRequest implements HasBody
 {
     use HasFormBody;
 
