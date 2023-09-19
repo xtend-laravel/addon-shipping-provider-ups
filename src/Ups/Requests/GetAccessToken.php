@@ -19,7 +19,7 @@ class GetAccessToken extends SoloRequest implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'https://wwwcie.ups.com/security/v1/oauth/token';
+        return config('ups.is_sandbox') ? 'https://wwwcie.ups.com/security/v1/oauth/token' : 'https://onlinetools.ups.com/security/v1/oauth/token';
     }
 
     protected function defaultBody(): array
@@ -32,7 +32,7 @@ class GetAccessToken extends SoloRequest implements HasBody
         return [
             'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
             'x-merchant-id' => $this->clientId,
-            'accept' => 'application/json',
+            'accept'        => 'application/json',
         ];
     }
 }

@@ -8,9 +8,12 @@ use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetAccessToken;
 
 class UpsApiConnector extends Connector
 {
+    protected string $productionBaseUrl = 'https://onlinetools.ups.com/api';
+    protected string $sandboxBaseUrl = 'https://wwwcie.ups.com/api';
+
     public function resolveBaseUrl(): string
     {
-        return "https://wwwcie.ups.com/api";
+        return config('ups.is_sandbox') ? $this->sandboxBaseUrl : $this->productionBaseUrl;
     }
 
     public function __construct()

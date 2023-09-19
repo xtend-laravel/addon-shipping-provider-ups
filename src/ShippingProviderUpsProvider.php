@@ -27,7 +27,7 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
         $this->app->bind(GetAccessToken::class, function () {
             return new GetAccessToken(
                 clientId: config('ups.client_id'),
-                clientSecret: config('ups.client_secret'),
+                clientSecret: config('ups.client_secret')
             );
         });
     }
