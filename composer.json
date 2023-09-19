@@ -23,7 +23,8 @@
     ],
     "require": {
         "php": "^8.1",
-        "ptondereau/laravel-ups-api": "dev-master"
+        "ptondereau/laravel-ups-api": "dev-master",
+        "saloonphp/saloon": "^2.0"
     },
     "repositories": [
         {
@@ -38,5 +39,10 @@
             ]
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }
