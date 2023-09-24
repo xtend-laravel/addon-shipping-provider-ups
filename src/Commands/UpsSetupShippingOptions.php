@@ -44,6 +44,8 @@ class UpsSetupShippingOptions extends Command
 
     private function getShippingOptions(): array
     {
+        // @todo This is based off the old API we now need to define an ENUM class for all the service codes based on:
+        // https://github.com/gabrielbull/php-ups-api/blob/cc5438412982425ef801ea61ba48060ce617d9b3/src/Entity/Service.php#L82
         return [
             '11' => [
                 'code'                 => '11',
