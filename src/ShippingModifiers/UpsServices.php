@@ -9,6 +9,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\TaxClass;
 use XtendLunar\Addons\ShippingProviderUps\Concerns\InteractsWithUps;
+use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Rating\GetRate;
 use XtendLunar\Addons\ShippingProviderUps\Ups\UpsApiConnector;
 use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
@@ -21,6 +22,12 @@ class UpsServices extends ShippingModifier
         $taxClass = TaxClass::getDefault();
 
         $upsProvider = ShippingProvider::where('provider_key', 'ups')->sole();
+
+        $connector = new UpsApiConnector();
+        $request = new GetRate();
+        $response = $connector->send($request);
+
+        dd($response->json());
 
         $upsProvider->options->each(function ($option) use ($cart, $taxClass) {
             ShippingManifest::addOption(
