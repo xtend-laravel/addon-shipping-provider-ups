@@ -7,10 +7,10 @@ use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
 use Lunar\Base\ShippingModifiers;
 use Xtend\Extensions\Lunar\Core\Concerns\XtendLunarCartPipeline;
-use Xtend\Extensions\Lunar\Core\Models\Cart;
 use XtendLunar\Addons\ShippingProviderUps\Commands\UpsSetupShippingOptions;
 use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetAccessToken;
+use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
 class ShippingProviderUpsProvider extends XtendAddonProvider
 {
@@ -41,6 +41,13 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
         }
 
         Blade::componentNamespace('XtendLunar\\Addons\\ShippingProviderUps\\Components', 'xtend-lunar::shipping-provider-ups');
+
+        if (!ShippingProvider::query()->where('provider_key', 'ups')->exists()) {
+            ShippingProvider::query()->create([
+                'name' => 'UPS',
+                'provider_key' => 'ups',
+            ]);
+        }
 
         $shippingModifier->add(
             modifier: UpsServices::class,
