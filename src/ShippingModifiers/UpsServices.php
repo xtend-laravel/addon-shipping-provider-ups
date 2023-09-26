@@ -32,7 +32,10 @@ class UpsServices extends ShippingModifier
                         name: $option->name,
                         description: $option->description,
                         identifier: $option->identifier,
-                        price: new Price($this->calculateServicePrice(), $cart->currency, 1),
+                        price: new Price(
+                            $this->calculateServicePrice($option, $cart),
+                            $cart->currency,
+                        ),
                         taxClass: $taxClass,
                     )
                 );
@@ -40,11 +43,10 @@ class UpsServices extends ShippingModifier
         });
     }
 
-    protected function calculateServicePrice(): int
+    protected function calculateServicePrice(ShippingOption $option, Cart $cart): int
     {
-        $connector = new UpsApiConnector();
-
+        return $this->getShippingRates($cart, $option->identifier);
         // @todo: Calculate the price of the shipping service from the API then move this logic into it's own class (Perhaps use Saloon v2?)
-        return 100;
+//        return 100;
     }
 }
