@@ -9,8 +9,6 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\TaxClass;
 use XtendLunar\Addons\ShippingProviderUps\Concerns\InteractsWithUps;
-use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Rating\GetRate;
-use XtendLunar\Addons\ShippingProviderUps\Ups\UpsApiConnector;
 use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
 class UpsServices extends ShippingModifier
@@ -25,15 +23,21 @@ class UpsServices extends ShippingModifier
 
         $upsProvider = ShippingProvider::where('provider_key', 'ups')->sole();
 
-        $upsProvider->options->each(function ($option) use ($cart, $taxClass, $upsServices) {
-            if (in_array($option->identifier, array_keys($upsServices))) {
+        $rateResults = $this->getShippingRates($cart);
+        $rates = [];
+        foreach ($rateResults as $key => $value) {
+            $rates[$value['Service']['Code']] = $value['TotalCharges']['MonetaryValue'];
+        }
+
+        $upsProvider->options->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
+            if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {
                 ShippingManifest::addOption(
                     new ShippingOption(
                         name: $option->name,
                         description: $option->description,
                         identifier: $option->identifier,
                         price: new Price(
-                            $this->calculateServicePrice($option, $cart),
+                            (int) ($rates[$option->identifier] * 100),
                             $cart->currency,
                         ),
                         taxClass: $taxClass,
@@ -41,12 +45,5 @@ class UpsServices extends ShippingModifier
                 );
             }
         });
-    }
-
-    protected function calculateServicePrice(ShippingOption $option, Cart $cart): int
-    {
-        return $this->getShippingRates($cart, $option->identifier);
-        // @todo: Calculate the price of the shipping service from the API then move this logic into it's own class (Perhaps use Saloon v2?)
-//        return 100;
     }
 }

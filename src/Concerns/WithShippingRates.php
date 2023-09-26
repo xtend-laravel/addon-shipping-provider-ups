@@ -18,7 +18,9 @@ trait WithShippingRates
 
         $request->body()->merge($payload);
 
-        return $connector->send($request)->json();
+        $response =  $connector->send($request)->json();
+
+        return $response['RateResponse']['RatedShipment'] ?? [];
     }
 
     public function getShippingRate(Cart $cart, string $serviceCode): array
@@ -26,11 +28,13 @@ trait WithShippingRates
         $connector = new UpsApiConnector();
         $request = new GetRate('Rate');
 
-        $payload = $this->makeRatePayload($cart);
+        $payload = $this->makeRatePayload($cart, $serviceCode);
 
         $request->body()->merge($payload);
 
-        return $connector->send($request)->json();
+        $response = $connector->send($request)->json();
+
+        return $response['RateResponse']['RatedShipment'] ?? [];
     }
 
     protected function getCartWeight(Cart $cart)
