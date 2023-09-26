@@ -15,7 +15,7 @@ use Xtend\Extensions\Lunar\Core\Models\Cart;
 
 trait InteractsWithUps
 {
-    use WithShippingOptions, WithShippingRates, WithShippingLabels;
+    use WithShippingOptions, WithShippingRates, WithShippingLabels, WithServicesOrigin;
 
     public function boot()
     {

@@ -21,24 +21,22 @@ class UpsServices extends ShippingModifier
     {
         $taxClass = TaxClass::getDefault();
 
+        $upsServices = static::getServicesForCountry($cart->shippingAddress->country->iso2);
+
         $upsProvider = ShippingProvider::where('provider_key', 'ups')->sole();
 
-        $connector = new UpsApiConnector();
-        $request = new GetRate();
-        $response = $connector->send($request);
-
-        dd($response->json());
-
-        $upsProvider->options->each(function ($option) use ($cart, $taxClass) {
-            ShippingManifest::addOption(
-                new ShippingOption(
-                    name: $option->name,
-                    description: $option->description,
-                    identifier: $option->identifier,
-                    price: new Price($this->calculateServicePrice(), $cart->currency, 1),
-                    taxClass: $taxClass,
-                )
-            );
+        $upsProvider->options->each(function ($option) use ($cart, $taxClass, $upsServices) {
+            if (in_array($option->identifier, array_keys($upsServices))) {
+                ShippingManifest::addOption(
+                    new ShippingOption(
+                        name: $option->name,
+                        description: $option->description,
+                        identifier: $option->identifier,
+                        price: new Price($this->calculateServicePrice(), $cart->currency, 1),
+                        taxClass: $taxClass,
+                    )
+                );
+            }
         });
     }
 

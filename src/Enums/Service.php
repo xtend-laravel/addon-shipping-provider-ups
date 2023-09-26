@@ -4,9 +4,11 @@ namespace XtendLunar\Addons\ShippingProviderUps\Enums;
 
 enum Service: string
 {
+    // all
     const UPS_WORLDWIDE_EXPRESS_FREIGHT = '96';
     const UPS_WORLDWIDE_EXPRESS_FREIGHT_MIDDAY = '71';
 
+    // other
     const UPS_EXPRESS = '07';
     const UPS_STANDARD = '11';
     const UPS_WORLDWIDE_EXPEDITED = '08';
