@@ -29,7 +29,7 @@ class UpsServices extends ShippingModifier
             $rates[$value['Service']['Code']] = $value['TotalCharges']['MonetaryValue'];
         }
 
-        $upsProvider->options->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
+        $upsProvider->options()->where('is_enabled', 1)->get()->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
             if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {
                 ShippingManifest::addOption(
                     new ShippingOption(
@@ -37,7 +37,7 @@ class UpsServices extends ShippingModifier
                         description: $option->description,
                         identifier: $option->identifier,
                         price: new Price(
-                            (int) ($rates[$option->identifier] * 100),
+                            (int)($rates[$option->identifier] * 100),
                             $cart->currency,
                         ),
                         taxClass: $taxClass,
