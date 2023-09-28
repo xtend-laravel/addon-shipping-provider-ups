@@ -5,33 +5,30 @@ namespace XtendLunar\Addons\ShippingProviderUps\Enums;
 enum Service: string
 {
     // all
-    const UPS_WORLDWIDE_EXPRESS_FREIGHT = '96';
-    const UPS_WORLDWIDE_EXPRESS_FREIGHT_MIDDAY = '71';
+    case UPS_WORLDWIDE_EXPRESS_FREIGHT = '96';
+    case UPS_WORLDWIDE_EXPRESS_FREIGHT_MIDDAY = '71';
 
     // other
-    const UPS_EXPRESS = '07';
-    const UPS_STANDARD = '11';
-    const UPS_WORLDWIDE_EXPEDITED = '08';
-    const UPS_WORLDWIDE_EXPRESS_PLUS = '54';
-    const UPS_WORLDWIDE_SAVER = '65';
+    case UPS_EXPRESS = '07';
+    case UPS_STANDARD = '11';
+    case UPS_WORLDWIDE_EXPEDITED = '08';
+    case UPS_WORLDWIDE_EXPRESS_PLUS = '54';
+    case UPS_WORLDWIDE_SAVER = '65';
 
-    const UPS_SECOND_DAY_AIR = '02';
-    const UPS_GROUND = '03';
-    const UPS_NEXT_DAY_AIR = '01';
-    const UPS_NEXT_DAY_AIR_EARLY = '14';
+    case UPS_SECOND_DAY_AIR = '02';
+    case UPS_GROUND = '03';
+    case UPS_NEXT_DAY_AIR = '01';
+    case UPS_NEXT_DAY_AIR_EARLY = '14';
 
-    const UPS_ACCESS_POINT_ECONOMY = '70';
-    const UPS_TODAY_DEDICATED_COURIER = '83';
-    const UPS_TODAY_EXPRESS = '85';
-    const UPS_TODAY_EXPRESS_SAVER = '86';
-    const UPS_TODAY_STANDARD = '82';
+    case UPS_ACCESS_POINT_ECONOMY = '70';
+    case UPS_TODAY_DEDICATED_COURIER = '83';
+    case UPS_TODAY_EXPRESS = '85';
+    case UPS_TODAY_EXPRESS_SAVER = '86';
+    case UPS_TODAY_STANDARD = '82';
+    case UPS_DAY_SELECT = '12';
 
-    const UPS_EXPEDITED = '02';
-    const UPS_EXPRESS_SAVER = '13';
-    const UPS_DAY_SELECT = '12';
-
-    const UPS_SECOND_DAY_AIR_AM = '59';
-    const UPS_NEXT_DAY_AIR_SAVER = '13';
+    case UPS_SECOND_DAY_AIR_AM = '59';
+    case UPS_NEXT_DAY_AIR_SAVER = '13';
 
     public function description(): string
     {
@@ -52,8 +49,6 @@ enum Service: string
             self::UPS_TODAY_EXPRESS => 'UPS Today Express',
             self::UPS_TODAY_EXPRESS_SAVER => 'UPS Today Express Saver',
             self::UPS_TODAY_STANDARD => 'UPS Today Standard',
-            self::UPS_EXPEDITED => 'UPS Expedited',
-            self::UPS_EXPRESS_SAVER => 'UPS Express Saver',
             self::UPS_DAY_SELECT => 'UPS Day Select',
             self::UPS_SECOND_DAY_AIR_AM => 'UPS Second Day Air AM',
             self::UPS_NEXT_DAY_AIR_SAVER => 'UPS Next Day Air Saver',

@@ -12,7 +12,7 @@ return [
             ],
             'city'         => 'Santa Rosa',
             'state_code'   => 'CA',
-            'postal_code'  => '95401',
+            'postal_code'  => '94565',
             'country_code' => 'US',
         ]
     ],
@@ -24,7 +24,7 @@ return [
             ],
             'city'         => 'Santa Rosa',
             'state_code'   => 'CA',
-            'postal_code'  => '95401',
+            'postal_code'  => '94565',
             'country_code' => 'US',
         ]
     ],

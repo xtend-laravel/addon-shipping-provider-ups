@@ -15,10 +15,11 @@ trait WithShippingRates
         $request = new GetRate('Shop');
 
         $payload = $this->makeRatePayload($cart);
+        dump($payload);
 
         $request->body()->merge($payload);
 
-        $response =  $connector->send($request)->json();
+        $response = $connector->send($request)->json();
 
         return $response['RateResponse']['RatedShipment'] ?? [];
     }
@@ -37,7 +38,7 @@ trait WithShippingRates
         return $response['RateResponse']['RatedShipment'] ?? [];
     }
 
-    protected function getCartWeight(Cart $cart)
+    public function getCartWeight(Cart $cart)
     {
         return $cart->lines->sum(function ($line) {
             return $line->purchasable->weight_value * $line->quantity;
@@ -92,8 +93,10 @@ trait WithShippingRates
                         'Address' => [
                             'AddressLine'       => array_filter([$shippingAddress->line_one, $shippingAddress->line_two, $shippingAddress->line_three]),
                             'City'              => $shippingAddress->city,
-                            'StateProvinceCode' => State::where('country_id', $shippingAddress->country_id)->where('name', $shippingAddress->state)->value('code'),
-                            'PostalCode'        => $shippingAddress->postcode,
+                            'StateProvinceCode' => 'NY',
+                            //'StateProvinceCode' => State::where('country_id', $shippingAddress->country_id)->where('name', $shippingAddress->state)->value('code'),
+                            'PostalCode'        => '10003',
+                            //'PostalCode'        => $shippingAddress->postcode,
                             'CountryCode'       => $shippingAddress->country->iso2,
                         ]
                     ],
@@ -102,6 +105,18 @@ trait WithShippingRates
                         'PackagingType' => [
                             'Code' => config('ups.packaging.type')
                         ],
+                        // 'SimpleRate' => [
+                        //     'Code' => 'S',
+                        // ],
+                        // 'Dimensions' => [
+                        //   'UnitOfMeasurement' => [
+                        //     'Code' => 'IN',
+                        //     'Description' => 'Inches'
+                        //   ],
+                        //   'Length' => '10',
+                        //   'Width' => '14',
+                        //   'Height' => '1',
+                        // ],
                         'PackageWeight' => [
                             'UnitOfMeasurement' => [
                                 'Code' => config('ups.packaging.weight_unit')

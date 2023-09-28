@@ -9,6 +9,7 @@ use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
 use Lunar\Models\TaxClass;
 use XtendLunar\Addons\ShippingProviderUps\Concerns\InteractsWithUps;
+use XtendLunar\Addons\ShippingProviderUps\Enums\Service;
 use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
 class UpsServices extends ShippingModifier
@@ -19,15 +20,25 @@ class UpsServices extends ShippingModifier
     {
         $taxClass = TaxClass::getDefault();
 
+        if ($cart->shippingAddress()->doesntExist()) {
+            return;
+        }
+
         $upsServices = static::getServicesForCountry($cart->shippingAddress->country->iso2);
 
         $upsProvider = ShippingProvider::where('provider_key', 'ups')->sole();
 
         $rateResults = $this->getShippingRates($cart);
+
         $rates = [];
         foreach ($rateResults as $key => $value) {
-            $rates[$value['Service']['Code']] = $value['TotalCharges']['MonetaryValue'];
+            $rates[$value['Service']['Code']] = [
+                'total' => $value['TotalCharges']['MonetaryValue'],
+                'service' => Service::tryFrom($value['Service']['Code'])->description(),
+            ];
         }
+
+        dd($rates, 'CA => NY', $this->getCartWeight($cart));
 
         $upsProvider->options()->where('is_enabled', 1)->get()->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
             if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {
