@@ -45,6 +45,13 @@ trait WithShippingRates
         });
     }
 
+    public function getLineItemsQuantity(Cart $cart)
+    {
+        return $cart->lines->sum(function ($line) {
+            return $line->quantity;
+        });
+    }
+
     public function getShipper(): array
     {
         return [
@@ -101,29 +108,7 @@ trait WithShippingRates
                         ]
                     ],
                     'ShipFrom' => $shipFrom,
-                    'Package'  => [
-                        'PackagingType' => [
-                            'Code' => config('ups.packaging.type')
-                        ],
-                        // 'SimpleRate' => [
-                        //     'Code' => 'S',
-                        // ],
-                        // 'Dimensions' => [
-                        //   'UnitOfMeasurement' => [
-                        //     'Code' => 'IN',
-                        //     'Description' => 'Inches'
-                        //   ],
-                        //   'Length' => '10',
-                        //   'Width' => '14',
-                        //   'Height' => '1',
-                        // ],
-                        'PackageWeight' => [
-                            'UnitOfMeasurement' => [
-                                'Code' => config('ups.packaging.weight_unit')
-                            ],
-                            'Weight'            => (string)$this->getCartWeight($cart),
-                        ]
-                    ]
+                    'Package'  => $this->definePackage($cart),
                 ]
             ]
         ];
@@ -135,5 +120,37 @@ trait WithShippingRates
         }
 
         return $payload;
+    }
+
+    protected function definePackage(Cart $cart): array
+    {
+        $quantity = $this->getLineItemsQuantity($cart);
+        $package = [
+            'PackagingType' => [
+                'Code' => config('ups.packaging.type')
+            ],
+            // @todo Note sure if dimensions really make a difference to the price?
+            // 'Dimensions' => [
+            //   'UnitOfMeasurement' => [
+            //     'Code' => 'IN',
+            //     'Description' => 'Inches'
+            //   ],
+            //   'Length' => '10',
+            //   'Width' => '14',
+            //   'Height' => '1',
+            // ],
+            'PackageWeight' => [
+                'UnitOfMeasurement' => [
+                    'Code' => config('ups.packaging.weight_unit')
+                ],
+                'Weight' => (string)$this->getCartWeight($cart),
+            ]
+        ];
+
+        if ($quantity < 3) {
+            $package['SimpleRate'] = ['Code' => 'S'];
+        }
+
+        return $package;
     }
 }
