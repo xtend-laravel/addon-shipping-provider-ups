@@ -38,7 +38,7 @@ class UpsServices extends ShippingModifier
             ];
         }
 
-        dd($rates, 'CA => NY', $this->getCartWeight($cart));
+        dd($rates, 'CA => NY');
 
         $upsProvider->options()->where('is_enabled', 1)->get()->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
             if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {

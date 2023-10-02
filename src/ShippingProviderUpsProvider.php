@@ -5,11 +5,15 @@ namespace XtendLunar\Addons\ShippingProviderUps;
 use Binaryk\LaravelRestify\Traits\InteractsWithRestifyRepositories;
 use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Hub\Facades\Slot;
 use Xtend\Extensions\Lunar\Core\Concerns\XtendLunarCartPipeline;
 use XtendLunar\Addons\ShippingProviderUps\Commands\UpsSetupShippingOptions;
 use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
+use XtendLunar\Addons\ShippingProviderUps\Slots\ShipmentLabelSlot;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetAccessToken;
+use XtendLunar\Features\ProductFeatures\Livewire\Slots\ProductFeatureSlot;
 use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
 class ShippingProviderUpsProvider extends XtendAddonProvider
@@ -19,7 +23,8 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
 
     public function register()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'xtend-lunar::shipping-provider-ups');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping-provider-ups');
+
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'xtend-lunar::shipping-provider-ups');
         $this->loadRestifyFrom(__DIR__.'/Restify', __NAMESPACE__.'\\Restify\\');
         $this->mergeConfigFrom(__DIR__.'/../config/ups.php', 'ups');
@@ -34,6 +39,10 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
 
     public function boot(ShippingModifiers $shippingModifier)
     {
+        Livewire::component('hub.orders.slots.shipment-label-slot', ShipmentLabelSlot::class);
+
+        Slot::register('order.show', ShipmentLabelSlot::class);
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 UpsSetupShippingOptions::class,

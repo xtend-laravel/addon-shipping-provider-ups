@@ -24,7 +24,8 @@
     "require": {
         "php": "^8.1",
         "ptondereau/laravel-ups-api": "dev-master",
-        "saloonphp/saloon": "^2.0"
+        "saloonphp/saloon": "^2.0",
+        "spatie/laravel-data": "dev-main"
     },
     "repositories": [
         {
