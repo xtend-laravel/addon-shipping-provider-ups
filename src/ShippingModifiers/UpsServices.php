@@ -38,7 +38,26 @@ class UpsServices extends ShippingModifier
             ];
         }
 
-        dd($rates, 'CA => NY');
+        // Sort array by lowest price
+        asort($rates);
+
+        // dump($rates, 'CA => NY');
+        foreach ($rates as $serviceCode => $rate) {
+            if (in_array($serviceCode, array_keys($upsServices))) {
+                ShippingManifest::addOption(
+                    new ShippingOption(
+                        name: $rate['service'],
+                        description: $rate['service'],
+                        identifier: $serviceCode,
+                        price: new Price(
+                            (int)($rate['total'] * 100),
+                            $cart->currency,
+                        ),
+                        taxClass: $taxClass,
+                    )
+                );
+            }
+        }
 
         $upsProvider->options()->where('is_enabled', 1)->get()->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
             if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {
