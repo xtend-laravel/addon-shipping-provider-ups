@@ -10,16 +10,68 @@
   <div>
     <div class="grid grid-cols-2 text-sm gap-2 px-3 py-3 border-b">
       <dt class="font-medium text-gray-500">Service</dt>
-      <dd class="text-right">UPS Ground</dd>
+      <dd class="text-right">{{ $this->serviceDescription }}</dd>
     </div>
   </div>
+  @if ($this->trackingNumber)
+    <div>
+      <div class="grid grid-cols-2 text-sm gap-2 px-3 py-3 border-b">
+        <dt class="font-medium text-gray-500">Tracking Number</dt>
+        <dd class="text-right">{{ $this->trackingNumber }}</dd>
+      </div>
+    </div>
+  @endif
   <!-- Form label download -->
-  <div class="md:flex justify-between gap-2">
-    <button wire:click="createShipment" class="mt-4 p-2 items-center text-xs font-semibold bg-blue-600 text-white rounded-lg shadow">
-      Create Shipment Label
-    </button>
-    <button wire:click="printLabel" class="inline-flex underline mt-4 items-center text-blue-600 text-xs px-4 py-2 font-semibold">
-      Print Label
-    </button>
+  <div class="md:flex justify-end gap-2 mt-4">
+    @if ($this->trackingNumber)
+      <button wire:click="voidShipment" class="inline-block rounded-lg bg-red-600 px-4 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-gray-800 focus-visible:ring active:bg-red-600 md:text-sm">
+        Void Shipment
+      </button>
+      <button wire:click="printLabel" class="inline-block rounded-lg bg-green-600 px-4 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-gray-800 focus-visible:ring active:bg-green-600 md:text-sm">
+        Print Label
+      </button>
+    @else
+      <button wire:click="createShipment" class="inline-block rounded-lg bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-gray-800 focus-visible:ring active:bg-blue-600 md:text-sm">
+        Create Label
+      </button>
+    @endif
   </div>
+
+  <x-hub::modal wire:model="showShippingWarning">
+    <div class="flex flex-col overflow-hidden rounded-lg bg-gray-900 sm:flex-row">
+      <!-- content - start -->
+      <div class="flex w-full flex-col p-4 sm:p-8">
+        <h2 class="text-xl font-bold text-white md:text-2xl lg:text-4xl uppercase">UPS Shipping Label</h2>
+        <p class="mb-8 max-w-md text-gray-400">This label has now been voided. Please create a new label.</p>
+
+        <div class="mt-auto">
+          <button wire:click="voidShipment" class="inline-block rounded-lg bg-red-600 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-gray-800 focus-visible:ring active:bg-red-600 md:text-base">
+            Void Shipment
+          </button>
+        </div>
+      </div>
+      <!-- content - end -->
+    </div>
+  </x-hub::modal>
+
+  <x-hub::modal max-width="6xl" wire:model="showShippingSuccess">
+    <div class="flex flex-col overflow-hidden rounded-lg bg-gray-900 sm:flex-row">
+      <!-- content - start -->
+      <div class="flex w-full flex-col p-4 sm:w-1/2 sm:p-8 lg:w-2/5">
+        <h2 class="text-xl font-bold text-white md:text-2xl lg:text-4xl uppercase">UPS Shipping Label</h2>
+        <p class="mb-4 text-xl font-semibold text-white md:text-2xl lg:text-4xl">Express Delivery</p>
+
+        <p class="mb-8 max-w-md text-gray-400">Please print your shipping label below and attach it to your package.</p>
+
+      </div>
+      <!-- content - end -->
+
+      <!-- image - start -->
+      <div class="order-first h-48 w-full bg-gray-700 sm:order-none sm:h-auto sm:w-1/2 lg:w-3/5 p-4">
+        <img src="{{ $this->labelImageUrl }}" loading="lazy" alt="Photo by Dom Hill" class="h-full w-full object-cover object-center" />
+      </div>
+      <!-- image - end -->
+    </div>
+  </x-hub::modal>
+
 </section>
