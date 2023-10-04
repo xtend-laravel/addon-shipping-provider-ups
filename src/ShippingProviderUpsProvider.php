@@ -13,7 +13,6 @@ use XtendLunar\Addons\ShippingProviderUps\Commands\UpsSetupShippingOptions;
 use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
 use XtendLunar\Addons\ShippingProviderUps\Slots\ShipmentLabelSlot;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\GetAccessToken;
-use XtendLunar\Features\ProductFeatures\Livewire\Slots\ProductFeatureSlot;
 use XtendLunar\Features\ShippingProviders\Models\ShippingProvider;
 
 class ShippingProviderUpsProvider extends XtendAddonProvider

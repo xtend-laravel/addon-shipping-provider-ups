@@ -23,7 +23,14 @@ class UpsApiConnector extends Connector
 
     protected function getAccessToken(): string
     {
-        Cache::forget('ups_access_token');
+        // Cache::forget('ups_access_token');
         return Cache::remember('ups_access_token', 60 * 60 * 3, fn() => app(GetAccessToken::class)->send()->json('access_token'));
+    }
+
+    protected function defaultConfig(): array
+    {
+        return [
+            //'debug' => true,
+        ];
     }
 }

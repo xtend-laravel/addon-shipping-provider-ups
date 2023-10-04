@@ -8,9 +8,10 @@ class PackageData extends Data
 {
     public function __construct(
         public ?string $Description,
-        public PackagePackagingData $Packaging,
-        public PackageDimensionsData $Dimensions,
-        public PackageWeightData $PackageWeight,
+        public ?PackagePackagingData $PackagingType,
+        public ?PackagePackagingData $Packaging,
+        public ?PackageDimensionsData $Dimensions,
+        public ?PackageWeightData $PackageWeight,
     ) {
     }
 }

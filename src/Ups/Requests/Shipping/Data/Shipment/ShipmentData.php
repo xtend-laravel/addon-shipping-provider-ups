@@ -4,6 +4,7 @@ namespace XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Shipping\Data\Shipm
 
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
+use Lunar\Models\State;
 use Spatie\LaravelData\Data;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Data\AddressData;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Data\ContactData;
@@ -17,13 +18,14 @@ class ShipmentData extends Data
         public ContactData $Shipper,
         public ContactData $ShipTo,
         public ?ContactData $ShipFrom,
-        public ?array $PaymentInformation,
+        public ?array $PaymentDetails,
         public ?ServiceData $Service,
         public ?PackageData $Package,
+        public ?array $PaymentInformation = null,
     ) {
     }
 
-    public static function prepare(Cart $cart, string $serviceCode = null): static
+    public static function prepare(Cart $cart, string $serviceCode = null, bool $fromShippingRateRequest = false): static
     {
         $description = 'Order #' . $cart->id;
         $address = $cart->shippingAddress;
@@ -32,9 +34,10 @@ class ShipmentData extends Data
             static::getShipper(),
             static::getShipTo($address),
             static::getShipFrom(),
-            static::getPaymentInformation(),
+            $fromShippingRateRequest ? static::getPaymentInformation() : null,
             static::getService($cart, $serviceCode),
-            static::getPackage($cart),
+            static::getPackage($cart, $fromShippingRateRequest),
+            !$fromShippingRateRequest ? static::getPaymentInformation() : null
         );
     }
 
@@ -70,10 +73,8 @@ class ShipmentData extends Data
             'Address' => AddressData::from([
                 'AddressLine' => array_filter([$shippingAddress->line_one, $shippingAddress->line_two, $shippingAddress->line_three]),
                 'City' => $shippingAddress->city,
-                'StateProvinceCode' => 'NY',
-                //'StateProvinceCode' => State::where('country_id', $shippingAddress->country_id)->where('name', $shippingAddress->state)->value('code'),
-                'PostalCode' => '10003',
-                //'PostalCode'        => $shippingAddress->postcode,
+                'StateProvinceCode' => State::where('country_id', $shippingAddress->country_id)->where('name', $shippingAddress->state)->value('code'),
+                'PostalCode' => $shippingAddress->postcode,
                 'CountryCode' => $shippingAddress->country->iso2,
             ]),
         ]);
@@ -118,7 +119,7 @@ class ShipmentData extends Data
         ]) : null;
     }
 
-    public static function getPackage(Cart $cart): PackageData
+    public static function getPackage(Cart $cart, bool $fromShippingRateRequest): PackageData
     {
         $quantity = static::getLineItemsQuantity($cart);
         $package = [
@@ -153,7 +154,7 @@ class ShipmentData extends Data
         return PackageData::from([
             'PackagingType' => [
                 'Code' => '02',
-                'Description' => 'Rate',
+                'Description' => 'Packaging',
             ],
             'Packaging' => [
                 'Code' => config('ups.packaging.type'),
