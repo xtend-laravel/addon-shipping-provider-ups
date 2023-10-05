@@ -54,7 +54,7 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
             }
 
             $shippingOptionCode = $this->order->cart?->shippingAddress?->shipping_option ?? null;
-            $this->serviceDescription = Service::tryFrom($shippingOptionCode)->description() ?? 'FREE SHIPPING';
+            $this->serviceDescription = Service::tryFrom($shippingOptionCode)?->description() ?? 'FREE SHIPPING';
         }
     }
 
