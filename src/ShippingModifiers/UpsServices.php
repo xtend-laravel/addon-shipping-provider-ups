@@ -33,7 +33,7 @@ class UpsServices extends ShippingModifier
         $rates = [];
         foreach ($rateResults as $key => $value) {
             $rates[$value['Service']['Code']] = [
-                'total' => $value['TotalCharges']['MonetaryValue'],
+                'total' => $value['Service']['Code'] !== '03' ? $value['TotalCharges']['MonetaryValue'] : 0,
                 'service' => Service::tryFrom($value['Service']['Code'])->description(),
             ];
         }
