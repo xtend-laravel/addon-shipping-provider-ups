@@ -98,11 +98,11 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
 
         $request->body()->merge($payload);
 
-        $connector->debugRequest(
-            function (PendingRequest $pendingRequest, RequestInterface $psrRequest) {
-                dd($pendingRequest->headers()->all());
-            }
-        );
+        // $connector->debugRequest(
+        //     function (PendingRequest $pendingRequest, RequestInterface $psrRequest) {
+        //         dd($pendingRequest->headers()->all());
+        //     }
+        // );
 
         $response = $connector->send($request)->json();
 
