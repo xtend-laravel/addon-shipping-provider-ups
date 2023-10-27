@@ -162,14 +162,14 @@ class ShipmentData extends Data
             ],
             'PackageWeight' => [
                 'UnitOfMeasurement' => [
-                    'Code' => 'LBS',
+                    'Code' => config('ups.packaging.weight_unit'),
                     'Description' => 'Pounds',
                 ],
                 'Weight' => '1',
             ],
             'Dimensions' => [
                 'UnitOfMeasurement' => [
-                    'Code' => 'IN',
+                    'Code' => config('ups.packaging.unit_of_measurement'),
                     'Description' => 'Inches',
                 ],
                 'Length' => '1',

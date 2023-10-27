@@ -18,7 +18,7 @@ class UpsServices extends ShippingModifier
 
     public function handle(Cart $cart)
     {
-        $taxClass = TaxClass::getDefault();
+        $taxClass = TaxClass::where('name', 'UPS')->sole();
 
         if ($cart->shippingAddress()->doesntExist()) {
             return;
@@ -61,16 +61,17 @@ class UpsServices extends ShippingModifier
 
         $upsProvider->options()->where('is_enabled', 1)->get()->each(function ($option) use ($cart, $taxClass, $upsServices, $rates) {
             if (in_array($option->identifier, array_keys($upsServices)) && isset($rates[$option->identifier])) {
+                $shippingRate = $rates[$option->identifier]['total'] ?? 0;
                 ShippingManifest::addOption(
                     new ShippingOption(
                         name: $option->name,
                         description: $option->description,
                         identifier: $option->identifier,
                         price: new Price(
-                            (int)($rates[$option->identifier] * 100),
+                            (int)($shippingRate * 100),
                             $cart->currency,
                         ),
-                        taxClass: $taxClass,
+                        taxClass: new TaxClass,
                     )
                 );
             }

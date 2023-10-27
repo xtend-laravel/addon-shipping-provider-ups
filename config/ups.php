@@ -30,6 +30,7 @@ return [
     ],
     'packaging'     => [
         'type'        => \XtendLunar\Addons\ShippingProviderUps\Enums\PackagingType::Package->value,
-        'weight_unit' => \XtendLunar\Addons\ShippingProviderUps\Enums\UnitOfMeasurement::Lbs->value
+        'weight_unit' => \XtendLunar\Addons\ShippingProviderUps\Enums\UnitOfMeasurement::Lbs->value,
+        'unit_of_measurement' => \XtendLunar\Addons\ShippingProviderUps\Enums\UnitOfMeasurement::Cm->value,
     ]
 ];

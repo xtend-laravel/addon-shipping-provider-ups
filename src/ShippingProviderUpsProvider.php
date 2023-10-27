@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Hub\Facades\Slot;
+use Lunar\Models\TaxClass;
 use Xtend\Extensions\Lunar\Core\Concerns\XtendLunarCartPipeline;
 use XtendLunar\Addons\ShippingProviderUps\Commands\UpsSetupShippingOptions;
 use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
@@ -38,6 +39,10 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
 
     public function boot(ShippingModifiers $shippingModifier)
     {
+        $this->publishes([
+           __DIR__.'/../config/ups.php' => config_path('ups.php'),
+        ]);
+
         Livewire::component('hub.orders.slots.shipment-label-slot', ShipmentLabelSlot::class);
 
         Slot::register('order.show', ShipmentLabelSlot::class);
@@ -54,6 +59,12 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
             ShippingProvider::query()->create([
                 'name' => 'UPS',
                 'provider_key' => 'ups',
+            ]);
+        }
+
+        if (!TaxClass::query()->where('name', 'UPS')->exists()) {
+            TaxClass::query()->create([
+                'name' => 'UPS',
             ]);
         }
 

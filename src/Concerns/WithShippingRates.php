@@ -27,8 +27,6 @@ trait WithShippingRates
 
         $response = $connector->send($request)->json();
 
-        // dump($response, $payload);
-
         return $response['RateResponse']['RatedShipment'] ?? [];
     }
 
