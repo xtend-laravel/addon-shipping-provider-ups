@@ -2,6 +2,7 @@
 
 namespace XtendLunar\Addons\ShippingProviderUps\ShippingModifiers;
 
+use Binaryk\LaravelRestify\Http\Controllers\PerformRepositoryActionController;
 use Lunar\Base\ShippingModifier;
 use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
@@ -35,6 +36,8 @@ class UpsServices extends ShippingModifier
             $rates[$value['Service']['Code']] = [
                 'total' => $value['Service']['Code'] !== '03' ? $value['TotalCharges']['MonetaryValue'] : 0,
                 'service' => Service::tryFrom($value['Service']['Code'])->description(),
+                'delay_days' => $value['GuaranteedDelivery']['BusinessDaysInTransit'] ?? null,
+                'delay_description' => $value['GuaranteedDelivery']['BusinessDaysInTransit']['DeliveryByTime'] ?? null,
             ];
         }
 
@@ -47,7 +50,10 @@ class UpsServices extends ShippingModifier
                 ShippingManifest::addOption(
                     new ShippingOption(
                         name: $rate['service'],
-                        description: $rate['service'],
+                        description: $rate['delay_days'] ? __('Delivery within :d days:time', [
+                            'd' => $rate['delay_days'],
+                            'time' => $rate['delay_description'] ? ' (' . $rate['delay_description'] . ')' : '',
+                        ]) : null,
                         identifier: $serviceCode,
                         price: new Price(
                             (int)($rate['total'] * 100),
