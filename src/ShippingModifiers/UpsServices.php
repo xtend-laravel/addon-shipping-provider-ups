@@ -53,7 +53,7 @@ class UpsServices extends ShippingModifier
                         description: $rate['delay_days'] ? __('Delivery within :d days:time', [
                             'd' => $rate['delay_days'],
                             'time' => $rate['delay_description'] ? ' (' . $rate['delay_description'] . ')' : '',
-                        ]) : null,
+                        ]) : $rate['service'],
                         identifier: $serviceCode,
                         price: new Price(
                             (int)($rate['total'] * 100),
