@@ -2,7 +2,6 @@
 
 namespace XtendLunar\Addons\ShippingProviderUps\Slots;
 
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image;
@@ -11,15 +10,11 @@ use Lunar\Hub\Http\Livewire\Traits\Notifies;
 use Lunar\Hub\Slots\AbstractSlot;
 use Lunar\Hub\Slots\Traits\HubSlot;
 use Lunar\Models\Order;
-use Psr\Http\Message\RequestInterface;
-use Saloon\Http\PendingRequest;
 use XtendLunar\Addons\ShippingProviderUps\Concerns\InteractsWithUps;
 use XtendLunar\Addons\ShippingProviderUps\Enums\Service;
-use XtendLunar\Addons\ShippingProviderUps\ShippingModifiers\UpsServices;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Shipping\Shipment;
 use XtendLunar\Addons\ShippingProviderUps\Ups\Requests\Shipping\VoidShipment;
 use XtendLunar\Addons\ShippingProviderUps\Ups\UpsApiConnector;
-use function Symfony\Component\Translation\t;
 
 class ShipmentLabelSlot extends Component implements AbstractSlot
 {
@@ -50,7 +45,7 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
             $this->trackingNumber = $this->order->meta?->tracking_number ?? null;
 
             if ($this->shipmentIdentificationNumber && $this->trackingNumber) {
-                $this->labelImageUrl = Storage::disk('public')->url('shipping-labels/' . $this->trackingNumber . '.gif');
+                $this->labelImageUrl = Storage::url('shipping-labels/' . $this->trackingNumber . '.gif');
             }
 
             $shippingOptionCode = $this->order->cart?->shippingAddress?->shipping_option ?? null;
@@ -159,7 +154,8 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
     protected function prepareShipmentPayload(): array
     {
         $cart = $this->order->cart;
-        $ratePayload = $this->makeShippingRequestPayload($cart, '03');
+        $shippingOptionCode = $cart->shippingAddress?->shipping_option ?? Service::UPS_GROUND;
+        $ratePayload = $this->makeShippingRequestPayload($cart, $shippingOptionCode);
 
         return [
             'ShipmentRequest' => $ratePayload->toArray(),
@@ -171,9 +167,9 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
         $imageData = base64_decode($packageResults['ShippingLabel']['GraphicImage']);
 
         $path = 'shipping-labels/' . $packageResults['TrackingNumber'];
-        Storage::disk('public')->put($path.'.gif', $imageData);
+        Storage::put($path.'.gif', $imageData);
 
-        $this->labelImageUrl = Storage::disk('public')->url($path.'.gif');
+        $this->labelImageUrl = Storage::url($path.'.gif');
 
         //$labelView = $this->labelView($packageResults);
         //Pdf::loadView($labelView->getName(), $labelView->getData())->save(storage_path('app/'.$path.'.pdf'))->stream();
@@ -183,12 +179,13 @@ class ShipmentLabelSlot extends Component implements AbstractSlot
     {
         $path = 'shipping-labels/' . $this->trackingNumber;
 
-        $image = Image\Facades\Image::make(storage_path('app/public/'.$path.'.gif'));
+        $label = Storage::url($path.'.gif');
+        $image = Image\Facades\Image::make($label);
         $image->rotate(-90);
 
-        $image->save(storage_path('app/public/'.$path.'-print.gif'));
+        Storage::put($path.'-print.gif', $image->stream()->__toString());
 
-        return response()->download(storage_path('app/public/shipping-labels/' . $this->trackingNumber . '-print.gif'));
+        return Storage::download($path.'-print.gif');
 
         // return Pdf::loadView('adminhub::pdf.order', [
         //     'order' => $this->order,
