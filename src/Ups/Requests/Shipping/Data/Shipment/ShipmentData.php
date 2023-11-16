@@ -68,7 +68,7 @@ class ShipmentData extends Data
             //'AttentionName' => 'AttentionName',
             'CompanyDisplayableName' => 'CompanyDisplayableName',
             'Phone' => [
-                'Number' => $shippingAddress->phone ?? '---',
+                'Number' => $shippingAddress->phone ?? '1234567890',
             ],
             'Address' => AddressData::from([
                 'AddressLine' => array_filter([$shippingAddress->line_one, $shippingAddress->line_two, $shippingAddress->line_three]),
