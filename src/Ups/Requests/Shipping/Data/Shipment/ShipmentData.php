@@ -65,10 +65,10 @@ class ShipmentData extends Data
     {
         return ContactData::from([
             'Name' => collect([$shippingAddress->first_name, $shippingAddress->last_name])->filter()->implode(' '),
-            'AttentionName' => 'AttentionName',
+            //'AttentionName' => 'AttentionName',
             'CompanyDisplayableName' => 'CompanyDisplayableName',
             'Phone' => [
-                'Number' => $shippingAddress->phone ?? '1234567890',
+                'Number' => $shippingAddress->phone ?? '---',
             ],
             'Address' => AddressData::from([
                 'AddressLine' => array_filter([$shippingAddress->line_one, $shippingAddress->line_two, $shippingAddress->line_three]),
