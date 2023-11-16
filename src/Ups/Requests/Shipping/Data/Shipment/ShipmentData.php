@@ -45,11 +45,11 @@ class ShipmentData extends Data
     {
         return ContactData::from([
             'ShipperNumber' => config('ups.shipper.shipper_number'),
-            'Name' => 'ShipperName',
-            'AttentionName' => 'AttentionName',
+            'Name' => config('ups.shipper.shipper_name'),
+            //'AttentionName' => 'AttentionName',
             'CompanyDisplayableName' => config('ups.shipper.shipper_number'),
             'Phone' => [
-                'Number' => '1234567890',
+                'Number' => config('ups.shipper.shipper_phone'),
             ],
             'Address' => AddressData::from([
                 'AddressLine' => config('ups.shipper.address.address_line'),
