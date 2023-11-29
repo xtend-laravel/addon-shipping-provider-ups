@@ -8,6 +8,7 @@ use Lunar\DataTypes\Price;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\ShippingManifest;
 use Lunar\Models\Cart;
+use Lunar\Models\CartLine;
 use Lunar\Models\TaxClass;
 use XtendLunar\Addons\ShippingProviderUps\Concerns\InteractsWithUps;
 use XtendLunar\Addons\ShippingProviderUps\Enums\Service;
@@ -22,6 +23,15 @@ class UpsServices extends ShippingModifier
         $taxClass = TaxClass::where('name', 'UPS')->sole();
 
         if ($cart->shippingAddress()->doesntExist()) {
+            return;
+        }
+
+        $preorderItems = $cart->lines->filter(
+            fn (CartLine $cartLine) => $cartLine->purchasable->attribute_data['availability']->getValue() === 'pre-order',
+        )->isNotEmpty();
+
+        if ($preorderItems) {
+            $this->addPreorderShippingOption($cart, $taxClass);
             return;
         }
 
@@ -82,5 +92,18 @@ class UpsServices extends ShippingModifier
                 );
             }
         });
+    }
+
+    protected function addPreorderShippingOption(Cart $cart, TaxClass $taxClass)
+    {
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Pre-order shipping',
+                description: 'Free Shipping',
+                identifier: 'AWR-PREORDER-SHIPPING',
+                price: new Price(2000, $cart->currency, 1),
+                taxClass: $taxClass
+            )
+        );
     }
 }

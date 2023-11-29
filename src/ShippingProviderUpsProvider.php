@@ -2,6 +2,7 @@
 
 namespace XtendLunar\Addons\ShippingProviderUps;
 
+use App\Modifiers\CustomShippingModifier;
 use Binaryk\LaravelRestify\Traits\InteractsWithRestifyRepositories;
 use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
