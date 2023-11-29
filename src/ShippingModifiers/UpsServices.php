@@ -99,7 +99,7 @@ class UpsServices extends ShippingModifier
         ShippingManifest::addOption(
             new ShippingOption(
                 name: 'Pre-order shipping',
-                description: 'Free Shipping',
+                description: 'One or more items in your cart are pre-order items. Your order will be shipped once all items are available.',
                 identifier: 'AWR-PREORDER-SHIPPING',
                 price: new Price(2000, $cart->currency, 1),
                 taxClass: $taxClass
