@@ -22,12 +22,12 @@ class UpsServices extends ShippingModifier
     {
         $taxClass = TaxClass::where('name', 'UPS')->sole();
 
-        if ($cart->shippingAddress()->doesntExist()) {
+        if ($cart->shippingAddress()->doesntExist() || !$cart->shippingAddress->country) {
             return;
         }
 
         $preorderItems = $cart->lines->filter(
-            fn (CartLine $cartLine) => $cartLine->purchasable->attribute_data['availability']->getValue() === 'pre-order',
+            fn (CartLine $cartLine) => $cartLine->purchasable->attribute_data && $cartLine->purchasable->attribute_data['availability']->getValue() === 'pre-order',
         )->isNotEmpty();
 
         if ($preorderItems) {
