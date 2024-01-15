@@ -22,6 +22,16 @@ class UpsServices extends ShippingModifier
     {
         $taxClass = TaxClass::where('name', 'UPS')->sole();
 
+        ShippingManifest::addOption(
+            new ShippingOption(
+                name: 'Free shipping',
+                description: 'Free shipping on orders all orders',
+                identifier: 'AWR-FREE-SHIPPING',
+                price: new Price(0, $cart->currency, 1),
+                taxClass: $taxClass
+            )
+        );
+
         if ($cart->shippingAddress()->doesntExist() || !$cart->shippingAddress->country) {
             return;
         }
