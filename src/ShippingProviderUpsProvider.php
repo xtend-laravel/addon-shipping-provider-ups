@@ -6,6 +6,7 @@ use App\Modifiers\CustomShippingModifier;
 use Binaryk\LaravelRestify\Traits\InteractsWithRestifyRepositories;
 use CodeLabX\XtendLaravel\Base\XtendAddonProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Hub\Facades\Slot;
@@ -56,17 +57,21 @@ class ShippingProviderUpsProvider extends XtendAddonProvider
 
         Blade::componentNamespace('XtendLunar\\Addons\\ShippingProviderUps\\Components', 'xtend-lunar::shipping-provider-ups');
 
-        if (!ShippingProvider::query()->where('provider_key', 'ups')->exists()) {
-            ShippingProvider::query()->create([
-                'name' => 'UPS',
-                'provider_key' => 'ups',
-            ]);
+        if (Schema::hasTable('lunar_shipping_providers')) {
+            if ( ! ShippingProvider::query()->where('provider_key', 'ups')->exists()) {
+                ShippingProvider::query()->create([
+                    'name' => 'UPS',
+                    'provider_key' => 'ups',
+                ]);
+            }
         }
 
-        if (!TaxClass::query()->where('name', 'UPS')->exists()) {
-            TaxClass::query()->create([
-                'name' => 'UPS',
-            ]);
+        if (Schema::hasTable('lunar_tax_classes')) {
+            if ( ! TaxClass::query()->where('name', 'UPS')->exists()) {
+                TaxClass::query()->create([
+                    'name' => 'UPS',
+                ]);
+            }
         }
 
         $shippingModifier->add(
