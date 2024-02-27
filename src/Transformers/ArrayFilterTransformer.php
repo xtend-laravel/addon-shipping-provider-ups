@@ -7,7 +7,7 @@ use Spatie\LaravelData\Transformers\Transformer;
 
 class ArrayFilterTransformer implements Transformer
 {
-    public function transform(DataProperty $property, mixed $value): array
+    public function transform(DataProperty $property, mixed $value): mixed
     {
         /** @var \Illuminate\Contracts\Support\Arrayable $value */
         return $this->filterNullRecursive($value->toArray());
